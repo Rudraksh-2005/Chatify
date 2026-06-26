@@ -36,9 +36,6 @@ A modern Full Stack Real-Time Chat Application built using the **MERN Stack**, *
 - [API Documentation](#-api-documentation)
 - [Socket.IO Workflow](#-socketio-workflow)
 - [Authentication Flow](#-authentication-flow)
-- [Future Enhancements](#-future-enhancements)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
