@@ -7,8 +7,13 @@ import {connectDB} from './lib/db.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { app,server} from './lib/socket.js';
+import dns from "node:dns";
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 dotenv.config();
+console.log("Mongo URL:", process.env.MONGODB_URL);
+
 const PORT=process.env.PORT||3000;
 // not using this app as socket server is introduced 
 // const app=express();
