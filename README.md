@@ -1,538 +1,834 @@
-# Chatify 💬
+# 💬 Chatify – Real-Time Chat Application
 
-Chatify is a **full-stack real-time chat application** designed to provide seamless, fast, and interactive communication between users. The project demonstrates the use of modern web technologies, real-time communication, authentication, and a responsive UI.
+<p align="center">
+
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express.js-Framework-black?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-success?logo=mongodb)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-RealTime-black?logo=socketdotio)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Styling-38BDF8?logo=tailwindcss)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Media-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+</p>
+
+<p align="center">
+
+A modern Full Stack Real-Time Chat Application built using the **MERN Stack**, **Socket.IO**, **JWT Authentication**, **MongoDB Atlas**, **Cloudinary**, **Resend**, and **Tailwind CSS**.
+
+</p>
 
 ---
 
-## 📌 Project Overview
+# 📖 Table of Contents
 
-Chatify allows users to:
-
-* Register and log in securely
-* Chat with other users in real time
-* Send and receive messages instantly
-* Experience audio/notification alerts for messages
-* Use a modern, responsive user interface
-
-The project follows a **client–server architecture** using a frontend for UI and a backend for business logic and real-time communication.
+- [Project Overview](#-project-overview)
+- [Key Features](#-key-features)
+- [Project Architecture](#-project-architecture)
+- [Folder Structure](#-folder-structure)
+- [Tech Stack](#-tech-stack)
+- [Installation Guide](#-installation-guide)
+- [Environment Variables](#-environment-variables)
+- [Running the Project](#-running-the-project)
+- [Production Build](#-production-build)
+- [API Documentation](#-api-documentation)
+- [Socket.IO Workflow](#-socketio-workflow)
+- [Authentication Flow](#-authentication-flow)
+- [Future Enhancements](#-future-enhancements)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 🏗️ Project Architecture
+# 📌 Project Overview
 
+**Chatify** is a modern full-stack messaging platform that enables users to communicate instantly using WebSockets.
+
+The application combines **REST APIs** with **Socket.IO** to provide real-time messaging while ensuring secure authentication using **JWT**, encrypted passwords with **bcrypt**, and media storage through **Cloudinary**.
+
+The project follows industry-standard software architecture and demonstrates concepts like:
+
+- RESTful APIs
+- JWT Authentication
+- Socket.IO
+- Protected Routes
+- MongoDB Atlas
+- Cloudinary Image Upload
+- Responsive UI
+- HTTP-only Cookies
+- API Security
+- Rate Limiting
+- Email Integration
+
+---
+
+# ✨ Key Features
+
+## 🔐 Authentication
+
+- User Registration
+- Secure Login
+- JWT Authentication
+- HTTP-only Cookies
+- Logout
+- Protected Routes
+- Session Validation
+
+---
+
+## 💬 Real-Time Chat
+
+- Instant Messaging
+- Socket.IO Communication
+- Live Message Updates
+- Online / Offline Status
+- Chat History
+
+---
+
+## 🖼 Image Sharing
+
+- Profile Picture Upload
+- Cloudinary Storage
+- CDN Optimized Images
+
+---
+
+## 🔔 User Experience
+
+- Message Notification Sound
+- Keyboard Typing Sound
+- Responsive Design
+- Dark Theme
+- Mobile Friendly UI
+
+---
+
+## 📧 Email Integration
+
+- Welcome Email
+- Transactional Emails
+- Powered by Resend
+
+---
+
+## 🛡 Security Features
+
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Arcjet Rate Limiting
+- HTTP-only Cookies
+- Environment Variables
+- Protected APIs
+
+---
+
+# 🏗 Project Architecture
+
+```text
+                        React Frontend
+                               │
+                    Axios + Socket.IO Client
+                               │
+                               ▼
+                      Express REST API Server
+                               │
+          ┌────────────────────┴────────────────────┐
+          │                                         │
+          ▼                                         ▼
+ JWT Authentication                        Socket.IO Server
+          │                                         │
+          ▼                                         ▼
+  Protected REST APIs                 Real-Time Communication
+          │                                         │
+          └────────────────────┬────────────────────┘
+                               ▼
+                         MongoDB Atlas
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+          Cloudinary                     Resend Email
 ```
+
+---
+
+# 📂 Folder Structure
+
+```text
 Chatify/
 │
-├── backend/        # Server-side code
-├── frontend/       # Client-side UI
-├── package.json    # Project dependencies
-├── .gitignore
-└── README.md
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── lib/
+│   │   ├── socket/
+│   │   ├── utils/
+│   │   └── index.js
+│   │
+│   ├── package.json
+│   └── .env
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── store/
+│   │   ├── hooks/
+│   │   ├── assets/
+│   │   └── App.jsx
+│   │
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── README.md
+└── package.json
 ```
 
 ---
 
-## 🚀 Platforms & Technologies Used
+# 🚀 Tech Stack
 
-### 🌐 Frontend
-
-* **React.js** – Component-based UI development
-* **Tailwind CSS** – Utility-first CSS framework for styling
-* **JavaScript (ES6+)** – Frontend logic
-
-### 🖥️ Backend
-
-* **Node.js** – JavaScript runtime environment
-* **Express.js** – Backend framework for APIs
-* **Socket.IO** – Real-time bidirectional communication
-
-### 🗄️ Database
-
-* **MongoDB** – NoSQL database for storing users and messages
-
-### 🔐 Authentication
-
-* **JWT (JSON Web Token)** – Secure user authentication
-
----
-
-## 🧩 Tech Stack Breakdown (Categorized)
+| Category | Technology |
+|-----------|------------|
+| Frontend | React.js |
+| Styling | Tailwind CSS |
+| UI Components | DaisyUI |
+| Routing | React Router |
+| State Management | Zustand |
+| Backend | Node.js |
+| Framework | Express.js |
+| Database | MongoDB Atlas |
+| Authentication | JWT |
+| Password Encryption | bcryptjs |
+| Real-Time Communication | Socket.IO |
+| Cloud Storage | Cloudinary |
+| Email Service | Resend |
+| Security | Arcjet |
+| API Client | Axios |
+| Environment Variables | dotenv |
 
 ---
 
-## 🖥️ Platform & Runtime
+# ⚙ Installation Guide
 
-### 🟢 Node.js
-
-**Category:** Backend Runtime
-
-Purpose:
-
-* Executes JavaScript on the server
-* Handles asynchronous operations efficiently
-* Supports scalable real-time applications
-
----
-
-## 🌐 Backend Framework & Real-Time Communication
-
-### 🟢 Express.js
-
-**Category:** Backend Framework
-
-Purpose:
-
-* Builds RESTful APIs
-* Handles routing and middleware
-* Manages authentication and request validation
-
----
-
-### 🟢 Socket.IO
-
-**Category:** Real-Time Communication
-
-Purpose:
-
-* Enables instant messaging
-* Maintains persistent WebSocket connections
-* Handles online/offline user status
-
----
-
-## 🗄️ Database & Cloud Storage
-
-### 🟢 MongoDB Atlas
-
-**Category:** Database Platform
-
-Purpose:
-
-* Stores user accounts and chat messages
-* Cloud-hosted and scalable NoSQL database
-* High availability and security
-
----
-
-### 🟢 Cloudinary
-
-**Category:** Media Storage Platform
-
-Purpose:
-
-* Stores profile images and media files
-* Optimized image delivery via CDN
-* Reduces server load
-
----
-
-## 📧 External Services
-
-### 🟢 Resend
-
-**Category:** Email Service
-
-Purpose:
-
-* Sends welcome/verification emails during signup
-* Reliable transactional email delivery
-
----
-
-### 🟢 Arcjet
-
-**Category:** Security Platform
-
-Purpose:
-
-* API protection and rate limiting
-* Prevents abuse and malicious requests
-
----
-
-## 🔐 Authentication & Security
-
-### 🟢 JWT (JSON Web Token)
-
-**Category:** Authentication
-
-Purpose:
-
-* Secure user sessions
-* Token-based authorization
-* Stateless authentication mechanism
-
----
-
-### 🟢 bcryptjs
-
-**Category:** Security Library
-
-Purpose:
-
-* Hashes user passwords
-* Protects against password leaks
-
----
-
-### 🟢 cookie-parser
-
-**Category:** Middleware
-
-Purpose:
-
-* Reads JWT tokens from cookies
-* Manages user sessions
-
----
-
-## 🎨 Frontend Libraries & Styling
-
-### 🟢 React.js
-
-**Category:** Frontend Library
-
-Purpose:
-
-* Component-based UI development
-* Efficient rendering using Virtual DOM
-* Handles chat interface logic
-
----
-
-### 🟢 Tailwind CSS
-
-**Category:** Styling Framework
-
-Purpose:
-
-* Utility-first styling
-* Responsive and clean UI design
-
----
-
-### 🟢 DaisyUI
-
-**Category:** UI Component Library
-
-Purpose:
-
-* Pre-built Tailwind components
-* Consistent and modern UI
-
----
-
-### 🟢 Lucide-react
-
-**Category:** Icon Library
-
-Purpose:
-
-* Lightweight SVG icons
-* Improves UI aesthetics
-
----
-
-## 🧠 State Management & Routing
-
-### 🟢 Zustand
-
-**Category:** State Management
-
-Purpose:
-
-* Global state handling
-* Manages user and chat state
-* Avoids prop drilling
-
----
-
-### 🟢 React Router
-
-**Category:** Routing Library
-
-Purpose:
-
-* Client-side navigation
-* Protected and public routes
-
----
-
-## 🌍 Networking & Utilities
-
-### 🟢 Axios
-
-**Category:** HTTP Client
-
-Purpose:
-
-* Handles API requests
-* Simplifies frontend-backend communication
-
----
-
-### 🟢 CORS
-
-**Category:** Security Middleware
-
-Purpose:
-
-* Allows cross-origin requests
-* Prevents browser CORS issues
-
----
-
-### 🟢 dotenv
-
-**Category:** Configuration Utility
-
-Purpose:
-
-* Manages environment variables
-* Keeps sensitive data secure
-
----
-
-### 🟢 Toast Notifications
-
-**Category:** UI Utility
-
-Purpose:
-
-* Displays success/error feedback
-* Improves user experience
-
----
-
-## ✨ Features & Functional Explanation
-
-### 🔐 User Signup with Email Sending
-
-* When a user signs up, an email is automatically sent using **Resend**
-* Can be used for welcome or verification purposes
-
-Purpose:
-
-* Improve user trust
-* Confirm successful registration
-
----
-
-### 💬 Real-Time Messaging
-
-* Messages are delivered instantly using **Socket.IO**
-* No page refresh required
-
-Functions:
-
-* `sendMessage()` – Emits message to server
-* `receiveMessage()` – Listens for incoming messages
-
----
-
-### ⌨️ Keyboard Sound Feature
-
-* Plays a typing sound when the user presses keys in the chat input
-
-Purpose:
-
-* Enhances chat realism
-* Improves user interaction experience
-
----
-
-### 🔔 Notification Sound
-
-* Plays a sound when a new message is received
-
-Purpose:
-
-* Alerts user of new messages
-* Works even when chat window is not focused
-
----
-
-### 🟢 Online / Offline Status
-
-* Tracks user connection using Socket.IO
-* Shows real-time user availability
-
----
-
-### 📱 Responsive UI
-
-* Built using Tailwind CSS & DaisyUI
-* Fully responsive across devices
-
----
-
-### 💬 Real-Time Messaging
-
-**Functionality:**
-
-* Messages are sent instantly without refreshing the page
-* Implemented using Socket.IO
-
-**Core Functions:**
-
-* `sendMessage()` – Emits message event to server
-* `receiveMessage()` – Listens for incoming messages
-
----
-
-### 🔔 Sound / Notification Feature
-
-* Plays a sound when a new message is received
-* Enhances user experience
-
-Example logic:
-
-```
-new Audio(notificationSound).play();
-```
-
----
-
-### 🟢 Online / Offline Status
-
-* Detects when a user connects or disconnects
-* Helps show active users
-
----
-
-### 📱 Responsive UI
-
-* Works on desktop and mobile screens
-* Tailwind CSS ensures responsiveness
-
----
-
-## 🔄 API Flow (Backend–Frontend Communication)
-
-This section explains **how APIs and real-time events flow inside Chatify**, step by step.
-
----
-
-### 🧩 1. User Signup API Flow
-
-**Flow:**
-
-1. User enters name, email, and password on signup page
-2. Frontend sends data using Axios to backend API
-3. Backend validates input
-4. Password is hashed using `bcryptjs`
-5. User data is stored in MongoDB Atlas
-6. JWT token is generated
-7. Token is stored in HTTP-only cookie
-8. Welcome email is sent using Resend
-9. Success response is returned to frontend
-
-**Purpose:**
-
-* Secure account creation
-* Email confirmation
-
----
-
-### 🧩 2. User Login API Flow
-
-**Flow:**
-
-1. User enters email and password
-2. Frontend sends credentials via Axios
-3. Backend verifies email
-4. Password is compared using `bcryptjs.compare()`
-5. JWT token is generated
-6. Token is stored in cookie
-7. User is authenticated
-
----
-
-### 🧩 3. Authentication Middleware Flow
-
-**Flow:**
-
-1. Client sends request to protected route
-2. `cookie-parser` extracts JWT token
-3. Token is verified using JWT secret
-4. If valid → request proceeds
-5. If invalid → access denied
-
----
-
-### 🧩 4. Real-Time Chat (Socket.IO) Flow
-
-**Flow:**
-
-1. User connects to Socket.IO server after login
-2. Server registers socket ID with user ID
-3. User sends message
-4. Message is emitted to server
-5. Server broadcasts message to receiver
-6. Receiver instantly receives message
-7. Notification sound plays
-
----
-
-### 🧩 5. Keyboard Sound Flow
-
-**Flow:**
-
-1. User types in chat input field
-2. Keypress event is detected
-3. Typing sound audio is triggered
-
----
-
-### 🧩 6. Notification Sound Flow
-
-**Flow:**
-
-1. Incoming message event received
-2. Audio notification is triggered
-3. Message is displayed on UI
-
----
-
-### 🧩 7. Image Upload Flow (Cloudinary)
-
-**Flow:**
-
-1. User selects image
-2. Image is sent to backend
-3. Backend uploads image to Cloudinary
-4. Cloudinary returns image URL
-5. URL is stored in database
-6. Image is displayed in chat
-
----
-
-### 🧩 8. Logout Flow
-
-**Flow:**
-
-1. User clicks logout
-2. Backend clears authentication cookie
-3. Socket connection is disconnected
-4. User session ends
-
----
-
-## ⚙️ Installation & Setup
-
-### Frontend Setup
+## 1️⃣ Clone Repository
 
 ```bash
-cd frontend
-npm install
-npm run build
+git clone https://github.com/Rudraksh-2005/Chatify.git
+
+cd Chatify
 ```
 
-### Backend Setup
+---
+
+## 2️⃣ Install Backend Dependencies
 
 ```bash
 cd backend
+
 npm install
+```
+
+---
+
+## 3️⃣ Install Frontend Dependencies
+
+Open another terminal
+
+```bash
+cd frontend
+
+npm install
+```
+
+---
+
+# 🔑 Environment Variables
+
+Create a `.env` file inside **backend**
+
+```env
+PORT=3000
+
+NODE_ENV=development
+
+CLIENT_URL=http://localhost:5173
+
+MONGO_URL=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+CLOUDINARY_CLOUD_NAME=
+
+CLOUDINARY_API_KEY=
+
+CLOUDINARY_API_SECRET=
+
+RESEND_API_KEY=
+
+ARCJET_KEY=
+
+ARCJET_ENV=development
+```
+
+---
+
+# ▶ Running the Project
+
+## Terminal 1 (Backend)
+
+```bash
+cd backend
+
+npm run dev
+```
+
+Expected Output
+
+```text
+Server is running on port 3000
+
+MongoDB Connected Successfully
+```
+
+---
+
+## Terminal 2 (Frontend)
+
+```bash
+cd frontend
+
+npm run dev
+```
+
+Open your browser
+
+```
+http://localhost:5173
+```
+
+---
+
+# 🏭 Production Build
+
+## Build Frontend
+
+```bash
+cd frontend
+
+npm run build
+```
+
+## Start Backend
+
+```bash
+cd backend
+
 npm start
 ```
+
+---
+
+# 🐞 Common Errors
+
+## MongoDB Connection Error
+
+```
+querySrv ECONNREFUSED
+```
+
+### Solution
+
+- Verify MongoDB Atlas Connection String
+- Check Network Access
+- Verify DNS Configuration
+- Verify Environment Variables
+- Check Database User Credentials
+
+---
+
+## CORS Error
+
+Ensure
+
+```env
+CLIENT_URL=http://localhost:5173
+```
+
+matches your frontend URL.
+
+---
+
+## JWT Error
+
+Ensure
+
+```env
+JWT_SECRET
+```
+
+exists in the `.env` file.
+
+---
+
+## Cloudinary Error
+
+Verify
+
+- Cloud Name
+- API Key
+- API Secret
+
+---
+
+## Resend Email Error
+
+Verify
+
+```
+RESEND_API_KEY
+```
+
+is correctly configured.
+
+---
+
+
+# 📡 API Documentation
+
+The backend exposes REST APIs for authentication, profile management and real-time messaging.
+
+**Base URL**
+
+```
+http://localhost:3000/api
+```
+
+---
+
+# 🔐 Authentication APIs
+
+| Method | Endpoint | Description | Authentication |
+|---------|----------|-------------|----------------|
+| POST | `/auth/signup` | Register a new user | ❌ |
+| POST | `/auth/login` | Login user | ❌ |
+| POST | `/auth/logout` | Logout current user | ✅ |
+| PUT | `/auth/update-profile` | Update profile picture | ✅ |
+| GET | `/auth/check` | Verify current logged-in user | ✅ |
+
+---
+
+## 🟢 User Signup
+
+### Endpoint
+
+```http
+POST /api/auth/signup
+```
+
+### Request Body
+
+```json
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "password": "123456"
+}
+```
+
+### Success Response
+
+```json
+{
+  "_id": "665b2....",
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "profilePic": "",
+  "token": "JWT_TOKEN"
+}
+```
+
+---
+
+## 🔑 User Login
+
+### Endpoint
+
+```http
+POST /api/auth/login
+```
+
+### Request
+
+```json
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+```
+
+### Success Response
+
+```json
+{
+  "_id": "...",
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "profilePic": ""
+}
+```
+
+---
+
+## 🚪 Logout
+
+### Endpoint
+
+```http
+POST /api/auth/logout
+```
+
+### Response
+
+```json
+{
+    "message":"Logged Out Successfully"
+}
+```
+
+---
+
+## 👤 Update Profile
+
+### Endpoint
+
+```http
+PUT /api/auth/update-profile
+```
+
+### Request
+
+```json
+{
+    "profilePic":"base64_or_image_url"
+}
+```
+
+### Response
+
+```json
+{
+    "profilePic":"https://res.cloudinary.com/...."
+}
+```
+
+---
+
+## ✅ Check Authentication
+
+### Endpoint
+
+```http
+GET /api/auth/check
+```
+
+Returns currently logged in user.
+
+---
+
+# 💬 Message APIs
+
+| Method | Endpoint | Description | Authentication |
+|---------|----------|-------------|----------------|
+| GET | `/messages/contacts` | Get all contacts | ✅ |
+| GET | `/messages/chat` | Get chat partners | ✅ |
+| GET | `/messages/:id` | Fetch conversation | ✅ |
+| POST | `/messages/send/:id` | Send message | ✅ |
+
+---
+
+# 📥 Get Contacts
+
+```http
+GET /api/messages/contacts
+```
+
+### Response
+
+```json
+[
+   {
+      "_id":"...",
+      "fullName":"Alex"
+   },
+   {
+      "_id":"...",
+      "fullName":"Emma"
+   }
+]
+```
+
+---
+
+# 💬 Get Conversation
+
+```http
+GET /api/messages/:id
+```
+
+Returns all messages exchanged with the selected user.
+
+Example Response
+
+```json
+[
+   {
+      "senderId":"...",
+      "receiverId":"...",
+      "text":"Hello",
+      "createdAt":"..."
+   }
+]
+```
+
+---
+
+# 📤 Send Message
+
+```http
+POST /api/messages/send/:id
+```
+
+### Request
+
+```json
+{
+    "text":"Hello 👋"
+}
+```
+
+### Response
+
+```json
+{
+    "_id":"...",
+    "senderId":"...",
+    "receiverId":"...",
+    "text":"Hello 👋",
+    "createdAt":"..."
+}
+```
+
+---
+
+# 🔄 API Workflow
+
+## 📝 Signup Flow
+
+```
+User
+   │
+   ▼
+Signup Form
+   │
+Axios Request
+   │
+Express API
+   │
+Validate Input
+   │
+Hash Password
+   │
+MongoDB Atlas
+   │
+Generate JWT
+   │
+HTTP-only Cookie
+   │
+Send Welcome Email
+   │
+Return Success Response
+```
+
+---
+
+## 🔐 Login Flow
+
+```
+User
+   │
+   ▼
+Login Form
+   │
+Axios
+   │
+Backend
+   │
+Find User
+   │
+Compare Password
+   │
+Generate JWT
+   │
+Store Cookie
+   │
+Authenticated
+```
+
+---
+
+## 💬 Chat Flow
+
+```
+User A
+   │
+Socket Emit
+   │
+Socket.IO Server
+   │
+Store Message
+   │
+MongoDB
+   │
+Emit to User B
+   │
+Notification Sound
+   │
+Display Message
+```
+
+---
+
+# ⚡ Socket.IO Events
+
+## Client → Server
+
+| Event | Description |
+|--------|-------------|
+| connection | User Connected |
+| sendMessage | Send Message |
+| disconnect | User Disconnected |
+
+---
+
+## Server → Client
+
+| Event | Description |
+|--------|-------------|
+| receiveMessage | Receive New Message |
+| onlineUsers | Active Users |
+| disconnect | User Left |
+
+---
+
+# ☁ Cloudinary Upload Flow
+
+```
+Choose Image
+      │
+      ▼
+Frontend
+      │
+Axios Upload
+      │
+Backend
+      │
+Cloudinary
+      │
+Image URL
+      │
+MongoDB
+      │
+Profile Updated
+```
+
+---
+
+# 📧 Resend Email Flow
+
+```
+Signup
+   │
+Backend
+   │
+Generate Email
+   │
+Resend API
+   │
+User Inbox
+```
+
+---
+
+# 🛡 Arcjet Security
+
+The backend uses **Arcjet** to provide:
+
+- API Protection
+- Rate Limiting
+- Bot Detection
+- Request Validation
+- Abuse Prevention
+
+Every request passes through Arcjet middleware before reaching protected routes.
+
+---
+
+# 🔐 Authentication Workflow
+
+```
+Login
+   │
+Generate JWT
+   │
+Store HTTP-only Cookie
+   │
+Protected Route
+   │
+Verify Token
+   │
+Allow Request
+```
+
+---
+
+# 🍪 Cookie Based Authentication
+
+Instead of storing JWT inside Local Storage,
+
+Chatify stores authentication tokens inside
+
+- HTTP-only Cookies
+- Secure Cookies
+- Protected Routes
+
+Benefits
+
+- XSS Protection
+- Secure Sessions
+- Stateless Authentication
+
+---
+
+# 📱 Responsive Design
+
+The application supports
+
+- Desktop
+- Tablet
+- Mobile
+
+using
+
+- Tailwind CSS
+- DaisyUI
+- Flexbox
+- Responsive Components
+
 ---
