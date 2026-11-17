@@ -1,17 +1,22 @@
-// audio setup
-const keyStrokeSounds = [
-  new Audio("/sounds/keystroke1.mp3"),
-  new Audio("/sounds/keystroke2.mp3"),
-  new Audio("/sounds/keystroke3.mp3"),
-  new Audio("/sounds/keystroke4.mp3"),
-];
-
 function useKeyboardSound() {
   const playRandomKeyStrokeSound = () => {
-    const randomSound = keyStrokeSounds[Math.floor(Math.random() * keyStrokeSounds.length)];
-
-    randomSound.currentTime = 0; // this is for a better UX, def add this
-    randomSound.play().catch((error) => console.log("Audio play failed:", error));
+    try {
+      const soundPaths = [
+        "/sounds/keystroke1.mp3",
+        "/sounds/keystroke2.mp3",
+        "/sounds/keystroke3.mp3",
+        "/sounds/keystroke4.mp3",
+      ];
+      const randomPath = soundPaths[Math.floor(Math.random() * soundPaths.length)];
+      const randomSound = new Audio(randomPath);
+      randomSound.currentTime = 0;
+      const playPromise = randomSound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => console.log("Keystroke audio play blocked:", error));
+      }
+    } catch (err) {
+      console.log("Error playing keystroke sound:", err);
+    }
   };
 
   return { playRandomKeyStrokeSound };

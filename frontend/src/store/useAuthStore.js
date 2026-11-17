@@ -3,7 +3,8 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
+const rawUrl = import.meta.env.VITE_API_URL || (import.meta.env.MODE === "development" ? "http://localhost:3000" : "https://chatify-backend-p4zw.onrender.com");
+const BASE_URL = rawUrl.replace(/\/+$/, '').replace(/\/api$/, '');
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -16,10 +17,14 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check");
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
       set({ authUser: res.data });
       get().connectSocket();
     } catch (error) {
       console.log("Error in authCheck:", error);
+      localStorage.removeItem("token");
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -30,12 +35,15 @@ export const useAuthStore = create((set, get) => ({
     set({ isSigningUp: true });
     try {
       const res = await axiosInstance.post("/auth/signup", data);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
       set({ authUser: res.data });
 
       toast.success("Account created successfully!");
       get().connectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Signup failed");
     } finally {
       set({ isSigningUp: false });
     }
@@ -45,13 +53,16 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoggingIn: true });
     try {
       const res = await axiosInstance.post("/auth/login", data);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
       set({ authUser: res.data });
 
       toast.success("Logged in successfully");
 
       get().connectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Login failed");
     } finally {
       set({ isLoggingIn: false });
     }
@@ -60,6 +71,7 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");
+      localStorage.removeItem("token");
       set({ authUser: null });
       toast.success("Logged out successfully");
       get().disconnectSocket();
@@ -76,7 +88,7 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Profile updated successfully");
     } catch (error) {
       console.log("Error in update profile:", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Failed to update profile");
     }
   },
 
@@ -84,8 +96,13 @@ export const useAuthStore = create((set, get) => ({
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
 
+    const token = localStorage.getItem("token") || authUser?.token;
+
     const socket = io(BASE_URL, {
-      withCredentials: true, // this ensures cookies are sent with the connection
+      withCredentials: true,
+      auth: {
+        token,
+      },
     });
 
     socket.connect();

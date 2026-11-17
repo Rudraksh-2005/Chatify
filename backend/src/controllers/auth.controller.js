@@ -45,7 +45,7 @@ export const signup = async (req,res)=>{
             //after CR
 
             const savedUser= await newUser.save();
-            generateToken(savedUser._id,res);
+            const token = generateToken(savedUser._id,res);
 
             //send a welcome email to the user
             try{
@@ -56,10 +56,11 @@ export const signup = async (req,res)=>{
 
 
             return res.status(201).json({
-                _id:newUser._id,
-                fullName:newUser.fullName,
-                email:newUser.email,
-                profilepic:newUser.profilepic,
+                _id:savedUser._id,
+                fullName:savedUser.fullName,
+                email:savedUser.email,
+                profilepic:savedUser.profilepic,
+                token,
             });
 
         }
@@ -89,12 +90,13 @@ export const login=async(req,res)=>{
         if(!isPasswordMatch){
             return res.status(400).json({message:"Invalid credentials"});
         }
-        generateToken(user._id,res);
+        const token = generateToken(user._id,res);
         res.status(200).json({
             _id:user._id,
             fullName:user.fullName,
             email:user.email,
             profilepic:user.profilepic,
+            token,
         });
     }
     catch(error){
@@ -105,7 +107,13 @@ export const login=async(req,res)=>{
 }
 
 export const logout=(_,res)=>{
-    res.cookie("jwt", "", { maxAge: 0 });
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.cookie("jwt", "", {
+        maxAge: 0,
+        httpOnly: true,
+        sameSite: isProduction ? 'none' : 'lax',
+        secure: isProduction,
+    });
     res.status(200).json({ message: "Logged out successfully" });
 };
 

@@ -11,11 +11,12 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
-  isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")) === true,
+  isSoundEnabled: localStorage.getItem("isSoundEnabled") === null || localStorage.getItem("isSoundEnabled") === "true",
 
   toggleSound: () => {
-    localStorage.setItem("isSoundEnabled", !get().isSoundEnabled);
-    set({ isSoundEnabled: !get().isSoundEnabled });
+    const nextValue = !get().isSoundEnabled;
+    localStorage.setItem("isSoundEnabled", String(nextValue));
+    set({ isSoundEnabled: nextValue });
   },
 
   setActiveTab: (tab) => set({ activeTab: tab }),
@@ -27,7 +28,7 @@ export const useChatStore = create((set, get) => ({
       const res = await axiosInstance.get("/messages/contacts");
       set({ allContacts: res.data });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Failed to load contacts");
     } finally {
       set({ isUsersLoading: false });
     }
@@ -39,7 +40,7 @@ export const useChatStore = create((set, get) => ({
       const res = await axiosInstance.get("/messages/chats");
       set({ chats: res.data });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Failed to load chats");
     } finally {
       set({ isUsersLoading: false });
     }
@@ -51,7 +52,7 @@ export const useChatStore = create((set, get) => ({
       const res = await axiosInstance.get(`/messages/${userId}`);
       set({ messages: res.data });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Something went wrong");
     } finally {
       set({ isMessagesLoading: false });
     }
@@ -81,16 +82,18 @@ export const useChatStore = create((set, get) => ({
     } catch (error) {
       // remove optimistic message on failure
       set({ messages: messages });
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || error.response?.data?.error || "Something went wrong");
     }
   },
 
   subscribeToMessages: () => {
-    const { selectedUser, isSoundEnabled } = get();
+    const { selectedUser } = get();
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
+    if (!socket) return;
 
+    socket.off("newMessage");
     socket.on("newMessage", (newMessage) => {
       const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isMessageSentFromSelectedUser) return;
@@ -98,17 +101,25 @@ export const useChatStore = create((set, get) => ({
       const currentMessages = get().messages;
       set({ messages: [...currentMessages, newMessage] });
 
-      if (isSoundEnabled) {
-        const notificationSound = new Audio("/sounds/notification.mp3");
-
-        notificationSound.currentTime = 0; // reset to start
-        notificationSound.play().catch((e) => console.log("Audio play failed:", e));
+      if (get().isSoundEnabled) {
+        try {
+          const notificationSound = new Audio("/sounds/notification.mp3");
+          notificationSound.currentTime = 0; // reset to start
+          const playPromise = notificationSound.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((e) => console.log("Audio play blocked by browser until user interacts:", e));
+          }
+        } catch (e) {
+          console.log("Audio playback error:", e);
+        }
       }
     });
   },
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
-    socket.off("newMessage");
+    if (socket) {
+      socket.off("newMessage");
+    }
   },
 }));

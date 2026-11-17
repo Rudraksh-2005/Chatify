@@ -21,7 +21,18 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.json({limit:"5mb"}));//to parse json data
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+            process.env.NODE_ENV !== "production" ||
+            !process.env.CLIENT_URL ||
+            origin === process.env.CLIENT_URL.replace(/\/+$/, '') ||
+            origin.endsWith(".vercel.app")
+        ) {
+            return callback(null, true);
+        }
+        return callback(null, true);
+    },
     credentials: true,
 }));
 app.use(cookieParser());//to parse cookies  

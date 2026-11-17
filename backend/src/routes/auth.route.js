@@ -14,8 +14,8 @@ router.post('/logout',logout)
 router.put('/update-profile',protectRoute,updateProfile);
 
 router.get('/check',protectRoute,(req,res)=>{
-    res.status(200).json(req.user);
-
+    const token = req.cookies?.jwt || req.headers.authorization?.replace(/^Bearer\s+/i, "");
+    res.status(200).json({ ...req.user.toObject(), token });
 })
 
 export default router;
