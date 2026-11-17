@@ -3,22 +3,21 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import {connectDB} from './lib/db.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { app,server} from './lib/socket.js';
-import dns from "node:dns";
-
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 dotenv.config();
-console.log("Mongo URL:", process.env.MONGODB_URL);
+console.log("Mongo URL:", process.env.MONGO_URL);
 
 const PORT=process.env.PORT||3000;
 // not using this app as socket server is introduced 
 // const app=express();
 
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.json({limit:"5mb"}));//to parse json data
 app.use(cors({
@@ -36,7 +35,7 @@ console.log("NODE_ENV =", process.env.NODE_ENV);
 
 if(process.env.NODE_ENV=== "production"){
     app.use(express.static(path.join(__dirname,'../../frontend/dist')));
-    app.use((_, res, next) => {
+    app.use((req, res, next) => {
         if (req.method !== "GET") return next();
         if (req.path.startsWith("/api")) return next();
         res.sendFile(path.join(__dirname,'../../frontend','dist','index.html'));
